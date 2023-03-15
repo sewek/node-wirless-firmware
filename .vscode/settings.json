@@ -1,0 +1,31 @@
+{
+  "idf.adapterTargetName": "esp32c3",
+  "idf.port": "/dev/cu.usbmodem2101",
+  "idf.openOcdConfigs": ["board/esp32c3-builtin.cfg"],
+  "idf.flashType": "JTAG",
+  "files.associations": {
+    "esp_bt.h": "c",
+    "nvs_flash.h": "c",
+    "event_groups.h": "c",
+    "task.h": "c",
+    "esp_gap_ble_api.h": "c",
+    "esp_gatt_common_api.h": "c",
+    "string.h": "c",
+    "inttypes.h": "c",
+    "service.h": "c",
+    "esp_gatts_api.h": "c",
+    "stdint.h": "c",
+    "esp_bt_main.h": "c",
+    "esp_err.h": "c",
+    "services.h": "c",
+    "battery.h": "c",
+    "esp_bt_defs.h": "c",
+    "esp_log.h": "c",
+    "battery_service.h": "c",
+    "btc_ble_storage.h": "c",
+    "ble_gap.h": "c",
+    "ble_interface.h": "c",
+    "esp_gatt_defs.h": "c",
+    "ble_gatt_server.h": "c"
+  }
+}

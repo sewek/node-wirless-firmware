@@ -1,0 +1,76 @@
+
+menu "BL Configurations"
+
+    config BT_DEVICE_NAME
+        string "Device name"
+        default "Sensor Node"
+        help
+            Set the device name.
+
+    menu "Services"
+        menuconfig BT_DEVICE_INFO_SERVICE_ENABLE
+            bool "Device Information Service"
+            default y
+            help
+                Enable Device Information Service.
+            
+            if BT_DEVICE_INFO_SERVICE_ENABLE
+
+                config BT_DEVICE_INFO_SERVICE_MODEL_NUMBER
+                    string "Model number"
+                    default "SensorNode1"
+                    help
+                        Set the model number.
+
+                config BT_DEVICE_INFO_SERVICE_SERIAL_NUMBER
+                    string "Serial number"
+                    default "000001"
+                    help
+                        Set the serial number.
+
+                config BT_DEVICE_INFO_SERVICE_FIRMWARE_REVISION
+                    string "Firmware revision"
+                    default "0.1.0"
+                    help
+                        Set the firmware revision.
+
+                config BT_DEVICE_INFO_SERVICE_HARDWARE_REVISION
+                    string "Hardware revision"
+                    default "1.0.0"
+                    help
+                        Set the hardware revision.
+
+                config BT_DEVICE_INFO_SERVICE_SOFTWARE_REVISION
+                    string "Software revision"
+                    default "1.0.0"
+                    help
+                        Set the software revision.
+
+                config BT_DEVICE_INFO_SERVICE_MANUFACTURER_NAME
+                    string "Manufacturer Name"
+                    default "Bionic Arm"
+                    help
+                        Set the manufacturer name.
+
+            endif
+
+        config BT_BATTERY_SERVICE_ENABLE
+            bool "Battery Service"
+            default y
+            help
+                Enable Battery Service.
+    endmenu
+
+    config SET_RAW_ADV_DATA
+        bool "Use raw data for advertising packets and scan response data"
+        help
+            If this config item is set, raw binary data will be used to generate advertising & scan response data.
+            This option uses the esp_ble_gap_config_adv_data_raw() and esp_ble_gap_config_scan_rsp_data_raw()
+            functions.
+
+            If this config item is unset, advertising & scan response data is provided via a higher-level
+            esp_ble_adv_data_t structure. The lower layer will generate the BLE packets. This option has higher
+            overhead at runtime.
+        
+
+endmenu
