@@ -42,26 +42,7 @@ static uint8_t raw_scan_rsp_data[] = {
 };
 #else
 
-static uint8_t adv_service_uuid128[16] = {
-    /* LSB <--------------------------------------------------------------------------------> MSB */
-    // first uuid, 16bit, [12],[13] is the value
-    0xfb,
-    0x34,
-    0x9b,
-    0x5f,
-    0x80,
-    0x00,
-    0x00,
-    0x80,
-    0x00,
-    0x10,
-    0x00,
-    0x00,
-    0xFF,
-    0x00,
-    0x00,
-    0x00,
-};
+static uint8_t adv_service_uuid128[16] = {0xC0, 0x2D, 0x0D, 0xAE, 0x33, 0x57, 0x46, 0x0B, 0xB0, 0x37, 0xA2, 0x04, 0x5D, 0xE4, 0x3D, 0x82};
 
 // The length of adv data must be less than 31 bytes
 // static uint8_t test_manufacturer[TEST_MANUFACTURER_DATA_LEN] =  {0x12, 0x23, 0x45, 0x56};
