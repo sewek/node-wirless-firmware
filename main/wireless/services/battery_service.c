@@ -66,8 +66,8 @@ static esp_err_t read_event_handler(int attr_index, esp_ble_gatts_cb_param_t *pa
 
 const ble_gatt_server_service_t battery_service = {
     .service_uuid_index = BATTERY_SERVICE_SVC,
-    .table_handle = &battery_service_handle_table,
-    .gatt_db = &battery_service_gatt_db,
+    .table_handle = battery_service_handle_table,
+    .gatt_db = battery_service_gatt_db,
     .gatt_db_len = BATTERY_SERVICE_NUM_ATTR,
 
     .get_attribute = get_attribute,

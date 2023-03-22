@@ -14,6 +14,10 @@
 #include "services/battery_service.h"
 #endif
 
+#ifdef CONFIG_BT_SENSOR_SERVICE_ENABLE
+#include "services/sensor_service.h"
+#endif
+
 const ble_gatt_server_service_t *ble_gatt_server_services[] = {
 
 #ifdef CONFIG_BT_DEVICE_INFO_SERVICE_ENABLE
@@ -22,6 +26,10 @@ const ble_gatt_server_service_t *ble_gatt_server_services[] = {
 
 #ifdef CONFIG_BT_BATTERY_SERVICE_ENABLE
     &battery_service,
+#endif
+
+#ifdef CONFIG_BT_SENSOR_SERVICE_ENABLE
+    &sensor_service,
 #endif
 
 };

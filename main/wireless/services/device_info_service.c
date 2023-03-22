@@ -109,8 +109,8 @@ const esp_gatts_attr_db_t device_info_service_gatt_db[DEVICE_INFO_SERVICE_NUM_AT
 
 const ble_gatt_server_service_t device_info_service = {
     .service_uuid_index = DEVICE_INFO_SERVICE_SVC,
-    .table_handle = &device_info_service_handle_table,
-    .gatt_db = &device_info_service_gatt_db,
+    .table_handle = device_info_service_handle_table,
+    .gatt_db = device_info_service_gatt_db,
     .gatt_db_len = DEVICE_INFO_SERVICE_NUM_ATTR,
     .uuid = {
         .len = ESP_UUID_LEN_16,

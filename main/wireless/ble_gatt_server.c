@@ -145,6 +145,7 @@ void gatts_proc_long_read(esp_gatt_if_t gatts_if, prepare_type_env_t *prepare_re
 static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param)
 {
     esp_err_t ret = ESP_OK;
+    ble_gatt_server_service_t *current = NULL;
 
     switch (event)
     {
@@ -159,11 +160,11 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
             ESP_LOGE(TAG, "set adv data failed, error code = %x", ret);
         }
 
-        ble_gatt_server_service_t *current = NULL;
+        // ble_gatt_server_service_t *current = NULL;
         for (uint8_t i = 0; i < ble_gatt_server_services_len; i++)
         {
             current = ble_gatt_server_services[i];
-            ret = esp_ble_gatts_create_attr_tab(current->gatt_db, gatts_if, current->gatt_db_len, i);
+            ret = esp_ble_gatts_create_attr_tab(current->gatt_db, gatts_if, current->gatt_db_len, 0);
             if (ret)
             {
                 ESP_LOGE(TAG, "create attr table failed, error code = %x", ret);
@@ -177,11 +178,11 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
         if (!param->read.is_long)
         {
             // If is.long is false then this is the first (or only) request to read data
-            int attrIndex;
+            int attrIndex = 0;
             esp_gatt_rsp_t rsp;
             rsp.attr_value.len = 0;
 
-            ble_gatt_server_service_t *current = NULL;
+            // ble_gatt_server_service_t *current = NULL;
             for (uint8_t i = 0; i < ble_gatt_server_services_len; i++)
             {
                 current = ble_gatt_server_services[i];
@@ -193,8 +194,6 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
                 attrIndex = current->get_attribute(param->read.handle);
                 if (attrIndex < current->gatt_db_len)
                 {
-                    ESP_LOGI(TAG, "Found attribute %d", attrIndex);
-
                     ret = current->read_event_cb(attrIndex, param, &rsp);
 
                     if (ret != ESP_OK)
@@ -304,42 +303,50 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
         ESP_LOGI(TAG, "ESP_GATTS_RESPONSE_EVT");
         break;
     case ESP_GATTS_CREAT_ATTR_TAB_EVT:
-        ESP_LOGI(TAG, "The number handle = %x", param->add_attr_tab.num_handle);
+        ESP_LOGI(TAG, "The number handle = %d", param->add_attr_tab.num_handle);
 
         ret = ESP_OK;
 
         if (param->add_attr_tab.status != ESP_GATT_OK)
         {
             ESP_LOGE(TAG, "create attribute table failed, error code=0x%x", param->add_attr_tab.status);
+            break;
         }
-        else
+
+        // ble_gatt_server_service_t *current = NULL;
+        for (uint8_t i = 0; i < ble_gatt_server_services_len; i++)
         {
-            ble_gatt_server_service_t *current = NULL;
-            for (uint8_t i = 0; i < ble_gatt_server_services_len; i++)
+            current = ble_gatt_server_services[i];
+
+            if (param->add_attr_tab.svc_uuid.len != ESP_UUID_LEN_16 &&
+                param->add_attr_tab.svc_uuid.len != ESP_UUID_LEN_32 &&
+                param->add_attr_tab.svc_uuid.len != ESP_UUID_LEN_128)
             {
-                current = ble_gatt_server_services[i];
+                ESP_LOGE(TAG, "create attribute table failed, UUID len %d not supported", param->add_attr_tab.svc_uuid.len);
+                continue;
+            }
 
-                if (param->add_attr_tab.svc_uuid.len != current->uuid.len)
+            if (param->add_attr_tab.svc_uuid.len != current->uuid.len)
+            {
+                continue;
+            }
+
+            if ((param->add_attr_tab.svc_uuid.uuid.uuid16 == *current->uuid.uuid.uuid16) ||
+                (param->add_attr_tab.svc_uuid.uuid.uuid32 == *current->uuid.uuid.uuid32) ||
+                (param->add_attr_tab.svc_uuid.uuid.uuid128 == *current->uuid.uuid.uuid128))
+            {
+                if (param->add_attr_tab.num_handle != current->gatt_db_len)
                 {
-                    continue;
+                    ESP_LOGE(TAG, "create attribute table failed, num_handle not match handle = %d", current->gatt_db_len);
                 }
-
-                if (param->add_attr_tab.svc_uuid.uuid.uuid16 == *current->uuid.uuid.uuid16)
+                else
                 {
-                    if (param->add_attr_tab.num_handle != current->gatt_db_len)
+                    ESP_LOGI(TAG, "create attribute table successfully, the number handle = %d\n", param->add_attr_tab.num_handle);
+                    memcpy(current->table_handle, param->add_attr_tab.handles, sizeof(*current->table_handle) * current->gatt_db_len);
+                    ret = esp_ble_gatts_start_service(current->table_handle[current->service_uuid_index]);
+                    if (ret)
                     {
-                        ESP_LOGE(TAG, "create attribute table failed, num_handle not match handle = %d", current->gatt_db_len);
-                        continue;
-                    }
-                    else
-                    {
-                        ESP_LOGI(TAG, "create attribute table successfully, the number handle = %d\n", param->add_attr_tab.num_handle);
-                        memcpy(current->table_handle, param->add_attr_tab.handles, sizeof(*current->table_handle));
-                        ret = esp_ble_gatts_start_service(current->table_handle[current->service_uuid_index]);
-                        if (ret)
-                        {
-                            ESP_LOGE(TAG, "start service failed, error code = %x", ret);
-                        }
+                        ESP_LOGE(TAG, "start service failed, error code = %x", ret);
                     }
                 }
             }

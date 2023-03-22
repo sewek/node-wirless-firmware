@@ -33,6 +33,7 @@
 #include "esp_gatt_common_api.h"
 
 #include "wireless/ble_interface.h"
+#include "sensor/sensor_interface.h"
 
 #include "sdkconfig.h"
 
@@ -51,6 +52,15 @@ void app_main(void)
     }
     ESP_ERROR_CHECK(ret);
     ESP_LOGI(TAG, "Initialized FLASH.");
+
+    // Initialize the sensor
+    ret = sensor_interface_init();
+    if (ret != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Failed to initialize sensor");
+        return;
+    }
+    ESP_LOGI(TAG, "Initialized Sensor.");
 
     // Initialize Bluetooth
     ret = ble_interface_init();

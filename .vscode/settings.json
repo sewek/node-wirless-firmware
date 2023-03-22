@@ -1,6 +1,6 @@
 {
   "idf.adapterTargetName": "esp32c3",
-  "idf.port": "/dev/cu.usbmodem2101",
+  "idf.port": "/dev/cu.usbmodem1101",
   "idf.openOcdConfigs": ["board/esp32c3-builtin.cfg"],
   "idf.flashType": "JTAG",
   "files.associations": {
@@ -26,6 +26,8 @@
     "ble_gap.h": "c",
     "ble_interface.h": "c",
     "esp_gatt_defs.h": "c",
-    "ble_gatt_server.h": "c"
+    "ble_gatt_server.h": "c",
+    "sensor_service.h": "c",
+    "semphr.h": "c"
   }
 }
