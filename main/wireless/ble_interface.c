@@ -34,7 +34,7 @@ esp_err_t ble_interface_init(void)
         return ret;
     }
 
-    ret = esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_P21);
+    ret = esp_ble_tx_power_set(ESP_BLE_PWR_TYPE_DEFAULT, ESP_PWR_LVL_N0);
     if (ret)
     {
         ESP_LOGE(TAG, "set tx power failed, error code = %x", ret);
