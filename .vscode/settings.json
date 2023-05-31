@@ -28,6 +28,8 @@
     "esp_gatt_defs.h": "c",
     "ble_gatt_server.h": "c",
     "sensor_service.h": "c",
-    "semphr.h": "c"
+    "semphr.h": "c",
+    "sensor_task.h": "c",
+    "sensor_interface.h": "c"
   }
 }
