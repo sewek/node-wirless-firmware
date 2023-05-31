@@ -21,6 +21,7 @@ sensor_data_t sensor_data = {
 };
 
 static SemaphoreHandle_t sensor_data_mutex = NULL;
+static TaskHandle_t sensor_task_handle = NULL;
 
 static uint32_t get_current_time_ms(void)
 {
@@ -94,7 +95,7 @@ esp_err_t sensor_task_init(void)
     sensor_data_mutex = xSemaphoreCreateBinary();
 
     // Create the task
-    xTaskCreate(sensor_task, "Sensor Task", 4096, NULL, 5, NULL);
+    xTaskCreate(sensor_task, "Sensor Task", 4096, NULL, 5, &sensor_task_handle);
     xSemaphoreGive(sensor_data_mutex);
 
     return ESP_OK;
@@ -102,5 +103,12 @@ esp_err_t sensor_task_init(void)
 
 esp_err_t sensor_task_deinit(void)
 {
+    // Delete the task
+    if (sensor_task_handle != NULL)
+    {
+        vTaskDelete(sensor_task_handle);
+        sensor_task_handle = NULL;
+    }
+
     return ESP_OK;
 }
